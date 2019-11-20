@@ -1,8 +1,27 @@
 import React, { Component, useState } from 'react';
 import './App.css';
 import getWeb3 from "./utils/getWeb3";
+import 'semantic-ui-css/semantic.min.css';
+import { Button, Input } from 'semantic-ui-react';
 
 const Web3 = require('web3');
+
+const Home = (props) => {
+  
+  const [message, setMessage] = useState('');
+
+  const signMessage = () => {
+    console.log('sign message:' + message);
+  };
+
+  return(
+    <>
+      <h1>ethereum-controller</h1>
+      <Input focus placeholder='Message...' onChange={e => setMessage(e.target.value)}/>
+      <Button primary onClick={() => signMessage()}>Sign Message</Button>
+    </>
+  );
+};
 
 class App extends Component {
 
@@ -38,12 +57,11 @@ class App extends Component {
     }
     
     return (
-      <div className="App">
-        Connected to Web3 :-)
-      </div>
+      <>
+        <Home {...this.state}/>
+      </>
     );
   }
 }
-
 
 export default App;
