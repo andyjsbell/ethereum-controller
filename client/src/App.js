@@ -11,13 +11,14 @@ const Home = (props) => {
   
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
+  const [hashedMessage, setHashedMessage] = useState('');
 
   const signMessage = () => {
-    console.log('sign message:' + message);
-    const hashedMessage = props.web3.sha3(message);
+    const hash = props.web3.sha3(message)
     console.log(props.accounts[0]);
-    props.web3.eth.sign(props.accounts[0], hashedMessage, (e,r) => {
+    props.web3.eth.sign(props.accounts[0], hash, (e,r) => {
       setSignature(r);
+      setHashedMessage(hash);
     });
   };
 
@@ -25,9 +26,10 @@ const Home = (props) => {
     <>
       <h1>ethereum-controller</h1>
       <h3>Account: {props.accounts[0]}</h3>
-      <h3>Signature: {signature}</h3>
       <Input focus placeholder='Message...' onChange={e => setMessage(e.target.value)}/>
       <Button primary onClick={() => signMessage()}>Sign Message</Button>
+      <h3>Hash: {hashedMessage}</h3>
+      <h3>Signature: {signature}</h3>      
     </>
   );
 };
