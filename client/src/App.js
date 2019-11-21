@@ -6,6 +6,7 @@ import { Button, Input } from 'semantic-ui-react';
 import ControllerContract from './contracts/Controller.json'
 // web3 https://github.com/ethereum/wiki/wiki/JavaScript-API
 const Web3 = require('web3');
+// https://github.com/pubkey/eth-crypto/
 const EthCrypto = require('eth-crypto');
 const localIdentity = EthCrypto.createIdentity();
 
