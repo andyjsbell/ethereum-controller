@@ -23,6 +23,7 @@
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
+const path = require("path");
 
 module.exports = {
   /**
@@ -34,7 +35,7 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
-
+  contracts_build_directory: path.join(__dirname, "client/src/contracts"),
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
     // if it's defined here and no other network is specified at the command line.
@@ -60,12 +61,13 @@ module.exports = {
 
     // Useful for deploying to a public network.
     // NB: It's important to wrap the provider as a function.
-    ropsten: {
-      host: "127.0.0.1",
-      port: 8545,
-      network_id: 3,
-      gas: 4700000
-    },
+    // ropsten: {
+    //   host: "127.0.0.1",
+    //   port: 8545,
+    //   network_id: 3,
+    //   gas: 4700000,
+    //   from: "0xacefb5a24133214d0b408da7232618c1cdf5ca5b"
+    // },
 
     // Useful for private networks
     // private: {
