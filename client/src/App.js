@@ -3,7 +3,7 @@ import './App.css';
 import getWeb3 from "./utils/getWeb3";
 import 'semantic-ui-css/semantic.min.css';
 import { Button, Input } from 'semantic-ui-react';
-
+import ControllerContract from './contracts/Controller.json'
 // web3 https://github.com/ethereum/wiki/wiki/JavaScript-API
 const Web3 = require('web3');
 
@@ -12,31 +12,42 @@ const Home = (props) => {
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
   const [hashedMessage, setHashedMessage] = useState('');
+  const [accountFromSignature, setAccountFromSignature] = useState('');
 
   const signMessage = () => {
     const hash = props.web3.sha3(message)
-    console.log(props.accounts[0]);
     props.web3.eth.sign(props.accounts[0], hash, (e,r) => {
       setSignature(r);
       setHashedMessage(hash);
+      setAccountFromSignature('');
+    });
+  };
+
+  
+  const confirmMessage = async () => {
+    props.controller.getAddressOfSigner(hashedMessage, signature, (err, account) => {
+      console.log("account:", account);
+      setAccountFromSignature(account);
     });
   };
 
   return(
     <>
-      <h1>ethereum-controller</h1>
+      <h1>ethereum-controller (web3 {props.web3.version.api}v)</h1>
       <h3>Account: {props.accounts[0]}</h3>
       <Input focus placeholder='Message...' onChange={e => setMessage(e.target.value)}/>
       <Button primary onClick={() => signMessage()}>Sign Message</Button>
+      <Button primary onClick={() => confirmMessage()}>Confirm Message</Button>
       <h3>Hash: {hashedMessage}</h3>
-      <h3>Signature: {signature}</h3>      
+      <h3>Signature: {signature}</h3>
+      <h3>Account from Signature: {accountFromSignature}</h3>
     </>
   );
 };
 
 class App extends Component {
 
-  state = {web3: null, accounts: []};
+  state = {web3: null, accounts: [], controller: null};
   
   handleChange(event, newValue) {
     this.setState({value: newValue});
@@ -45,12 +56,19 @@ class App extends Component {
   componentDidMount = async () => {
     try {
       // Workaround for compatibility between web3 and truffle-contract
-      
       Web3.providers.HttpProvider.prototype.sendAsync = Web3.providers.HttpProvider.prototype.send;	
       
       const web3 = await getWeb3();
       const accounts = await web3.eth.accounts;
-      this.setState({ web3:web3, accounts:accounts });
+      const networkId = await web3.version.network;
+      const deployedNetwork = ControllerContract.networks[networkId];
+      console.log(networkId);
+      console.log(ControllerContract);
+      console.log(deployedNetwork);
+      const contract  = web3.eth.contract(ControllerContract.abi);
+      const instance = contract.at(deployedNetwork.address);
+
+      this.setState({ web3:web3, accounts:accounts, controller:instance });
       
     } catch (error) {
       // Catch any errors for any of the above operations.
