@@ -3,6 +3,7 @@ import './App.css';
 import getWeb3 from "./utils/getWeb3";
 import 'semantic-ui-css/semantic.min.css';
 import { Button, Input } from 'semantic-ui-react';
+import Tx from 'ethereumjs-tx';
 
 // web3 https://github.com/ethereum/wiki/wiki/JavaScript-API
 const Web3 = require('web3');
